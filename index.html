@@ -79,6 +79,103 @@ main { padding: 16px; max-width: 720px; margin: 0 auto; }
 }
 .section-title:first-child { margin-top: 4px; }
 
+/* band finder */
+.finder {
+  margin-bottom: 8px;
+}
+.searchbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.searchbar input {
+  width: 100%;
+  height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg2);
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 650;
+  outline: none;
+  padding: 0 44px 0 14px;
+  box-shadow: 0 1px 0 rgba(255,255,255,.03) inset;
+}
+.searchbar input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(230,57,70,.2);
+}
+.searchbar input::placeholder { color: #77778c; font-weight: 600; }
+.clearsearch {
+  position: absolute;
+  right: 7px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--line);
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 800;
+}
+.clearsearch[hidden] { display: none; }
+.searchresults {
+  margin-top: 8px;
+}
+.searchresult {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  margin-bottom: 8px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  background: var(--card);
+  color: inherit;
+  text-align: left;
+  font: inherit;
+}
+.searchresult:active { background: #20202c; transform: scale(.99); }
+.searchresult .when {
+  min-width: 58px;
+  font-size: 12px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.searchresult .when small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.searchresult .matchbody { flex: 1; min-width: 0; }
+.searchresult .matchname {
+  overflow-wrap: anywhere;
+  font-size: 15px;
+  font-weight: 800;
+}
+.searchresult .matchmeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 650;
+}
+.searchresult .arrow {
+  color: var(--muted);
+  font-size: 19px;
+  font-weight: 800;
+}
+
 /* NOW cards */
 .nowcard {
   display: block;
@@ -155,6 +252,7 @@ main { padding: 16px; max-width: 720px; margin: 0 auto; }
 }
 .slot:active { background: #20202c; }
 .slot.live { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+.slot.focus { border-color: var(--spotify); box-shadow: 0 0 0 1px var(--spotify) inset; opacity: 1; }
 .slot.past { opacity: .42; }
 .slot .time { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 14px; min-width: 44px; }
 .slot .time small { display: block; font-weight: 500; color: var(--muted); font-size: 11px; }
@@ -291,6 +389,14 @@ main { padding: 16px; max-width: 720px; margin: 0 auto; }
   <div id="clock" class="clock"></div>
 </header>
 <main>
+  <section id="finder" class="finder">
+    <div class="section-title">Buscar banda</div>
+    <div class="searchbar">
+      <input id="bandSearch" type="search" placeholder="Busca una banda" autocomplete="off" autocapitalize="none" spellcheck="false">
+      <button id="clearSearch" class="clearsearch" type="button" aria-label="Borrar busqueda" hidden>x</button>
+    </div>
+    <div id="searchResults" class="searchresults" aria-live="polite"></div>
+  </section>
   <section id="now" class="now"></section>
   <nav id="days" class="days"></nav>
   <section id="schedule" class="schedule"></section>
@@ -322,6 +428,16 @@ window.MAP = {"days":{"Miercoles 1":{"id":"6WyWzpydSuo6be9vBQLe6f","url":"https:
   }
   function fmtDateLong(d) {
     return new Intl.DateTimeFormat("es-ES", { weekday: "long", day: "numeric", month: "long", timeZone: TZ }).format(d);
+  }
+  function escapeHTML(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function normalizeSearch(s) {
+    var out = String(s || "").toLowerCase();
+    try { out = out.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); } catch (err) {}
+    return out.replace(/[^a-z0-9]+/g, " ").trim();
   }
   function safeStorageGet(key) {
     try { return window.localStorage && localStorage.getItem(key); }
@@ -360,6 +476,9 @@ window.MAP = {"days":{"Miercoles 1":{"id":"6WyWzpydSuo6be9vBQLe6f","url":"https:
   }
   function eventsForDay(day) {
     return EVENTS.filter(function (e) { return e.day_label === day; });
+  }
+  function eventKey(e) {
+    return e.starts_at + "|" + e.artist;
   }
   function isLive(e, now) {
     return new Date(e.starts_at) <= now && now < new Date(e.ends_at);
@@ -400,7 +519,7 @@ window.MAP = {"days":{"Miercoles 1":{"id":"6WyWzpydSuo6be9vBQLe6f","url":"https:
   }
 
   // ---- rendering -----------------------------------------------------------
-  var state = { selectedDay: null, userPicked: false, view: "grid" };
+  var state = { selectedDay: null, userPicked: false, view: "grid", focusKey: "" };
 
   function renderClock(now) {
     var el = document.getElementById("clock");
@@ -491,8 +610,9 @@ window.MAP = {"days":{"Miercoles 1":{"id":"6WyWzpydSuo6be9vBQLe6f","url":"https:
       var live = isLive(e, now);
       var past = new Date(e.ends_at) <= now;
       var cls = "slot" + (live ? " live" : past ? " past" : "");
+      if (state.focusKey === eventKey(e)) cls += " focus";
       var tag = href ? "a" : "div";
-      var hattr = href ? ' href="' + href + '"' : "";
+      var hattr = (href ? ' href="' + href + '"' : "") + ' data-key="' + escapeHTML(eventKey(e)) + '"';
       var col = stageColor(e.stage);
       return "<" + tag + ' class="' + cls + '"' + hattr + ">" +
         '<div class="time">' + fmtTime(e.starts_at) + "<small>" + fmtTime(e.ends_at) + "</small></div>" +
@@ -574,6 +694,85 @@ window.MAP = {"days":{"Miercoles 1":{"id":"6WyWzpydSuo6be9vBQLe6f","url":"https:
     });
   }
 
+  function searchEvents(query) {
+    var q = normalizeSearch(query);
+    if (q.length < 2) return [];
+    var terms = q.split(/\s+/).filter(Boolean);
+    return EVENTS.filter(isReal).map(function (e) {
+      var artist = normalizeSearch(e.artist);
+      var compactArtist = artist.replace(/\s+/g, "");
+      var compactQuery = q.replace(/\s+/g, "");
+      if (!terms.every(function (term) { return artist.indexOf(term) !== -1 || compactArtist.indexOf(term) !== -1; })) return null;
+      var score = 10;
+      if (artist === q || compactArtist === compactQuery) score += 90;
+      else if (artist.indexOf(q) === 0 || compactArtist.indexOf(compactQuery) === 0) score += 50;
+      else if (artist.indexOf(q) !== -1 || compactArtist.indexOf(compactQuery) !== -1) score += 25;
+      score += Math.max(0, 20 - artist.length / 2);
+      return { event: e, score: score };
+    }).filter(Boolean).sort(function (a, b) {
+      if (b.score !== a.score) return b.score - a.score;
+      return new Date(a.event.starts_at) - new Date(b.event.starts_at);
+    }).slice(0, 8).map(function (item) { return item.event; });
+  }
+
+  function renderSearchResults(query) {
+    var host = document.getElementById("searchResults");
+    var clear = document.getElementById("clearSearch");
+    if (!host) return;
+    var q = query || "";
+    if (clear) clear.hidden = q.length === 0;
+    if (normalizeSearch(q).length < 2) {
+      host.innerHTML = "";
+      return;
+    }
+    var matches = searchEvents(q);
+    if (!matches.length) {
+      host.innerHTML = '<div class="empty">No encuentro esa banda.</div>';
+      return;
+    }
+    host.innerHTML = matches.map(function (e) {
+      var col = stageColor(e.stage);
+      return '<button class="searchresult" type="button" data-day="' + escapeHTML(e.day_label) + '" data-key="' + escapeHTML(eventKey(e)) + '" style="border-left-color:' + col + '">' +
+        '<div class="when">' + fmtTime(e.starts_at) + '<small>' + escapeHTML(e.day_label) + '</small></div>' +
+        '<div class="matchbody"><div class="matchname">' + escapeHTML(e.artist) + '</div>' +
+        '<div class="matchmeta"><span class="chip" style="background:' + col + '">' + escapeHTML(e.stage) + '</span>' +
+        '<span>' + fmtTime(e.starts_at) + "-" + fmtTime(e.ends_at) + '</span></div></div>' +
+        '<div class="arrow">&rsaquo;</div></button>';
+    }).join("");
+    Array.prototype.forEach.call(host.querySelectorAll(".searchresult"), function (btn) {
+      btn.addEventListener("click", function () {
+        state.selectedDay = btn.getAttribute("data-day");
+        state.focusKey = btn.getAttribute("data-key") || "";
+        state.userPicked = true;
+        state.view = "list";
+        renderAll();
+        setTimeout(function () {
+          var target = document.querySelector('.slot.focus');
+          if (target && target.scrollIntoView) {
+            target.scrollIntoView({ block: "center" });
+            return;
+          }
+          var schedule = document.getElementById("schedule");
+          if (schedule && schedule.scrollIntoView) schedule.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 0);
+      });
+    });
+  }
+
+  function setupSearch() {
+    var input = document.getElementById("bandSearch");
+    var clear = document.getElementById("clearSearch");
+    if (!input) return;
+    input.addEventListener("input", function () { renderSearchResults(input.value); });
+    if (clear) {
+      clear.addEventListener("click", function () {
+        input.value = "";
+        input.focus();
+        renderSearchResults("");
+      });
+    }
+  }
+
   function renderDayButton() {
     var btn = document.getElementById("dayBtn");
     var href = hrefForDay(state.selectedDay);
@@ -612,6 +811,7 @@ window.MAP = {"days":{"Miercoles 1":{"id":"6WyWzpydSuo6be9vBQLe6f","url":"https:
 
   // demo time: tap the clock to simulate a moment (helps testing before July)
   document.addEventListener("DOMContentLoaded", function () {
+    setupSearch();
     try { renderAll(); }
     catch (err) { showBootError(err); return; }
     setInterval(function () {
