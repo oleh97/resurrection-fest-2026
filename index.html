@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Resu 2026">
+<meta name="theme-color" content="#0a0a0e">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%230a0a0e%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2244%22%20font-size%3D%2238%22%20text-anchor%3D%22middle%22%20fill%3D%22%23e63946%22%20font-family%3D%22sans-serif%22%20font-weight%3D%22bold%22%3ER%3C%2Ftext%3E%3C%2Fsvg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%230a0a0e%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2244%22%20font-size%3D%2238%22%20text-anchor%3D%22middle%22%20fill%3D%22%23e63946%22%20font-family%3D%22sans-serif%22%20font-weight%3D%22bold%22%3ER%3C%2Ftext%3E%3C%2Fsvg%3E">
+<title>Resurrection Fest EG 2026</title>
+<style>
+:root {
+  --bg: #0a0a0e;
+  --bg2: #14141c;
+  --card: #1b1b25;
+  --line: #2a2a38;
+  --text: #f2f2f5;
+  --muted: #9a9aae;
+  --accent: #e63946;
+  --main: #e63946;
+  --ritual: #2f80ed;
+  --chaos: #b5179e;
+  --desert: #e8932b;
+  --spotify: #1db954;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body { padding-bottom: 92px; }
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px calc(14px + env(safe-area-inset-top, 0px));
+  padding-top: max(14px, env(safe-area-inset-top, 14px));
+  background: linear-gradient(180deg, #101018 0%, rgba(16,16,24,.92) 100%);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(8px);
+}
+
+.brand {
+  font-weight: 800;
+  letter-spacing: .14em;
+  font-size: 13px;
+  line-height: 1.2;
+}
+.brand span { color: var(--accent); }
+
+.clock {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.clock .t { font-size: 19px; font-weight: 700; }
+.clock .d { font-size: 11px; color: var(--muted); text-transform: capitalize; }
+
+main { padding: 16px; max-width: 720px; margin: 0 auto; }
+
+.section-title {
+  font-size: 12px;
+  letter-spacing: .18em;
+  color: var(--muted);
+  margin: 22px 2px 10px;
+  text-transform: uppercase;
+}
+.section-title:first-child { margin-top: 4px; }
+
+/* NOW cards */
+.nowcard {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: 14px;
+  padding: 14px 14px 12px;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.nowcard:active { transform: scale(.99); }
+.nowcard .stage {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.nowcard .artist { font-size: 22px; font-weight: 800; margin: 3px 0 6px; }
+.nowcard .meta { font-size: 13px; color: var(--muted); display: flex; gap: 10px; align-items: center; }
+.nowcard .left { color: var(--text); font-weight: 600; }
+.progress { height: 4px; background: var(--line); border-radius: 4px; margin-top: 11px; overflow: hidden; }
+.progress > i { display: block; height: 100%; background: var(--accent); border-radius: 4px; }
+.nowcard .spot { position: absolute; top: 12px; right: 12px; font-size: 11px; color: var(--spotify); font-weight: 700; }
+
+.empty {
+  background: var(--bg2);
+  border: 1px dashed var(--line);
+  border-radius: 14px;
+  padding: 18px 16px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.empty b { color: var(--text); }
+
+/* day tabs */
+.days {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 0 4px;
+  scrollbar-width: none;
+}
+.days::-webkit-scrollbar { display: none; }
+.day {
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  background: var(--bg2);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.day.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.day.today::after { content: "•"; margin-left: 6px; color: var(--spotify); }
+
+/* schedule list */
+.slot {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  padding: 11px 12px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+.slot:active { background: #20202c; }
+.slot.live { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+.slot.past { opacity: .42; }
+.slot .time { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 14px; min-width: 44px; }
+.slot .time small { display: block; font-weight: 500; color: var(--muted); font-size: 11px; }
+.slot .body { flex: 1; min-width: 0; }
+.slot .name { font-weight: 700; font-size: 15px; }
+.slot .sub { font-size: 12px; color: var(--muted); margin-top: 2px; display: flex; align-items: center; gap: 8px; }
+.chip { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; color: #0a0a0e; }
+.slot .go { align-self: center; color: var(--spotify); font-size: 18px; }
+.slot.live .badge { color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: .1em; }
+
+/* floating day button */
+.daybtn {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  max-width: 688px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 54px;
+  background: var(--spotify);
+  color: #04210f;
+  font-weight: 800;
+  font-size: 15px;
+  text-decoration: none;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.5);
+  z-index: 30;
+}
+.daybtn.disabled { background: var(--bg2); color: var(--muted); border: 1px solid var(--line); }
+.daybtn svg { width: 20px; height: 20px; }
+
+.countdown { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.countdown b { color: var(--text); font-size: 16px; }
+
+/* view toggle (Lista / Parrilla) */
+.viewtoggle { display: flex; gap: 6px; margin: 0 0 12px; }
+.viewtoggle button {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid var(--line);
+  background: var(--bg2);
+  color: var(--muted);
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+}
+.viewtoggle button.on { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+/* grid / parrilla */
+.grid { font-size: 11px; }
+.grow { display: flex; }
+.gaxiscell, .gaxis { width: 36px; flex: 0 0 36px; }
+.ghead { margin-bottom: 2px; }
+.gstage {
+  flex: 1;
+  text-align: center;
+  font-weight: 800;
+  font-size: 10px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #0a0a0e;
+  padding: 5px 2px;
+  margin: 0 1px;
+  border-radius: 7px 7px 0 0;
+}
+.gbody { position: relative; }
+.gaxis { position: relative; }
+.ghour {
+  position: absolute;
+  right: 5px;
+  transform: translateY(-6px);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  font-size: 10px;
+}
+.gcol {
+  flex: 1;
+  position: relative;
+  margin: 0 1px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,.015) 0,
+    rgba(255,255,255,.015) 77px,
+    var(--line) 77px,
+    var(--line) 78px
+  );
+}
+.gblock {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-radius: 6px;
+  padding: 3px 5px;
+  overflow: hidden;
+  color: #fff;
+  text-decoration: none;
+  display: block;
+  box-shadow: 0 1px 3px rgba(0,0,0,.45);
+}
+.gblock:active { filter: brightness(1.1); }
+.gblock .gname { display: block; font-weight: 800; font-size: 11px; line-height: 1.05; text-shadow: 0 1px 2px rgba(0,0,0,.5); }
+.gblock .gtime2 { display: block; font-size: 9px; opacity: .85; margin-top: 1px; font-variant-numeric: tabular-nums; }
+.gblock.past { opacity: .5; }
+.gblock.live { outline: 2px solid #fff; outline-offset: -2px; z-index: 3; }
+.gnow {
+  position: absolute;
+  left: 36px;
+  right: 0;
+  height: 2px;
+  background: #fff;
+  z-index: 4;
+  box-shadow: 0 0 7px rgba(255,255,255,.9);
+}
+.gnow::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">RESURRECTION FEST<br><span>EG 2026</span></div>
+  <div id="clock" class="clock"></div>
+</header>
+<main>
+  <section id="now" class="now"></section>
+  <nav id="days" class="days"></nav>
+  <section id="schedule" class="schedule"></section>
+</main>
+<a id="dayBtn" class="daybtn" href="#"></a>
+<script>
+window.SCHEDULE = {"festival":{"name":"Resurrection Fest EG 2026","timezone":"Europe/Madrid","location":"Viveiro, Spain","starts_on":"2026-07-01","ends_on":"2026-07-04"},"events":[{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Main","artist":"Annisokay","starts_at":"2026-07-01T15:25:00+02:00","ends_at":"2026-07-01T16:15:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Chaos","artist":"Crowded","starts_at":"2026-07-01T15:25:00+02:00","ends_at":"2026-07-01T16:10:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Ritual","artist":"Aneuma","starts_at":"2026-07-01T16:15:00+02:00","ends_at":"2026-07-01T16:55:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Main","artist":"Man With A Mission","starts_at":"2026-07-01T16:55:00+02:00","ends_at":"2026-07-01T17:45:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Chaos","artist":"God Complex","starts_at":"2026-07-01T16:55:00+02:00","ends_at":"2026-07-01T17:45:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Ritual","artist":"TSS","starts_at":"2026-07-01T17:45:00+02:00","ends_at":"2026-07-01T18:30:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Desert","artist":"Black Maracas","starts_at":"2026-07-01T17:45:00+02:00","ends_at":"2026-07-01T18:35:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Main","artist":"President","starts_at":"2026-07-01T18:30:00+02:00","ends_at":"2026-07-01T19:20:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Chaos","artist":"Immortal Disfigurement","starts_at":"2026-07-01T18:30:00+02:00","ends_at":"2026-07-01T19:20:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Ritual","artist":"The Pretty Wild","starts_at":"2026-07-01T19:20:00+02:00","ends_at":"2026-07-01T20:10:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Desert","artist":"Cardiac","starts_at":"2026-07-01T19:20:00+02:00","ends_at":"2026-07-01T20:10:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Chaos","artist":"The Scratch","starts_at":"2026-07-01T20:05:00+02:00","ends_at":"2026-07-01T21:05:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Main","artist":"Thrown","starts_at":"2026-07-01T20:10:00+02:00","ends_at":"2026-07-01T21:00:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Ritual","artist":"The Browning","starts_at":"2026-07-01T21:00:00+02:00","ends_at":"2026-07-01T21:50:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Desert","artist":"Last Train","starts_at":"2026-07-01T21:00:00+02:00","ends_at":"2026-07-01T22:00:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Main","artist":"A Day To Remember","starts_at":"2026-07-01T21:50:00+02:00","ends_at":"2026-07-01T23:00:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Chaos","artist":"Get The Shot","starts_at":"2026-07-01T22:00:00+02:00","ends_at":"2026-07-01T23:00:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Ritual","artist":"Self Deception","starts_at":"2026-07-01T23:00:00+02:00","ends_at":"2026-07-01T23:55:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Desert","artist":"LAMPR3RA","starts_at":"2026-07-01T23:00:00+02:00","ends_at":"2026-07-02T00:00:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Main","artist":"Sabaton","starts_at":"2026-07-02T00:00:00+02:00","ends_at":"2026-07-02T01:50:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Chaos","artist":"High Vis","starts_at":"2026-07-02T00:00:00+02:00","ends_at":"2026-07-02T01:10:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Desert","artist":"Faetooth","starts_at":"2026-07-02T01:10:00+02:00","ends_at":"2026-07-02T02:20:00+02:00"},{"festival_day":"2026-07-01","day_label":"Miercoles 1","doors":"15:00","stage":"Ritual","artist":"Testament","starts_at":"2026-07-02T01:50:00+02:00","ends_at":"2026-07-02T03:00:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Main","artist":"Fallen At Dawn","starts_at":"2026-07-02T15:25:00+02:00","ends_at":"2026-07-02T16:10:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Desert","artist":"Band Contest","starts_at":"2026-07-02T15:20:00+02:00","ends_at":"2026-07-02T16:00:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Chaos","artist":"Fuet!","starts_at":"2026-07-02T15:45:00+02:00","ends_at":"2026-07-02T16:35:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Ritual","artist":"Her Anxiety","starts_at":"2026-07-02T16:10:00+02:00","ends_at":"2026-07-02T16:50:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Desert","artist":"Silly Goose","starts_at":"2026-07-02T16:35:00+02:00","ends_at":"2026-07-02T17:20:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Main","artist":"Caskets","starts_at":"2026-07-02T16:50:00+02:00","ends_at":"2026-07-02T17:40:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Chaos","artist":"Blood Command","starts_at":"2026-07-02T17:20:00+02:00","ends_at":"2026-07-02T18:20:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Ritual","artist":"Burning Witches","starts_at":"2026-07-02T17:40:00+02:00","ends_at":"2026-07-02T18:30:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Desert","artist":"Blues Pills","starts_at":"2026-07-02T18:20:00+02:00","ends_at":"2026-07-02T19:30:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Main","artist":"Angelus Apatrida","starts_at":"2026-07-02T18:30:00+02:00","ends_at":"2026-07-02T19:30:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Ritual","artist":"The Funeral Portrait","starts_at":"2026-07-02T19:30:00+02:00","ends_at":"2026-07-02T20:30:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Chaos","artist":"Belvedere","starts_at":"2026-07-02T19:30:00+02:00","ends_at":"2026-07-02T20:30:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Desert","artist":"Ciclonautas","starts_at":"2026-07-02T20:30:00+02:00","ends_at":"2026-07-02T21:30:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Main","artist":"Iron Maiden","starts_at":"2026-07-02T20:50:00+02:00","ends_at":"2026-07-02T23:00:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Chaos","artist":"The Callous Daoboys","starts_at":"2026-07-02T21:35:00+02:00","ends_at":"2026-07-02T22:35:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Desert","artist":"Vulvarine","starts_at":"2026-07-02T22:35:00+02:00","ends_at":"2026-07-02T23:35:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Ritual","artist":"Caliban","starts_at":"2026-07-02T23:10:00+02:00","ends_at":"2026-07-03T00:20:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Chaos","artist":"Lionheart","starts_at":"2026-07-02T23:45:00+02:00","ends_at":"2026-07-03T01:00:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Main","artist":"Anthrax","starts_at":"2026-07-03T00:20:00+02:00","ends_at":"2026-07-03T01:35:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Desert","artist":"Psychonaut","starts_at":"2026-07-03T01:00:00+02:00","ends_at":"2026-07-03T02:00:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Ritual","artist":"Witch Club Satan","starts_at":"2026-07-03T01:35:00+02:00","ends_at":"2026-07-03T02:25:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Chaos","artist":"Authority Zero","starts_at":"2026-07-03T02:10:00+02:00","ends_at":"2026-07-03T03:10:00+02:00"},{"festival_day":"2026-07-02","day_label":"Jueves 2","doors":"15:00","stage":"Main","artist":"Feuerschwanz","starts_at":"2026-07-03T02:25:00+02:00","ends_at":"2026-07-03T03:25:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Ritual","artist":"Nukore","starts_at":"2026-07-03T15:05:00+02:00","ends_at":"2026-07-03T15:50:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Desert","artist":"Band Contest","starts_at":"2026-07-03T15:05:00+02:00","ends_at":"2026-07-03T15:45:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Main","artist":"Blaze The Trail","starts_at":"2026-07-03T15:50:00+02:00","ends_at":"2026-07-03T16:35:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Chaos","artist":"Pants Off","starts_at":"2026-07-03T15:50:00+02:00","ends_at":"2026-07-03T16:35:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Ritual","artist":"Not Yet","starts_at":"2026-07-03T16:35:00+02:00","ends_at":"2026-07-03T17:20:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Desert","artist":"Madmess","starts_at":"2026-07-03T16:35:00+02:00","ends_at":"2026-07-03T17:20:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Main","artist":"The Rasmus","starts_at":"2026-07-03T17:20:00+02:00","ends_at":"2026-07-03T18:10:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Chaos","artist":"Oslo Ovnies","starts_at":"2026-07-03T17:20:00+02:00","ends_at":"2026-07-03T18:10:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Ritual","artist":"Okkultist","starts_at":"2026-07-03T18:10:00+02:00","ends_at":"2026-07-03T19:00:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Desert","artist":"Mourir","starts_at":"2026-07-03T18:10:00+02:00","ends_at":"2026-07-03T19:00:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Main","artist":"Bleed From Within","starts_at":"2026-07-03T19:00:00+02:00","ends_at":"2026-07-03T20:00:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Chaos","artist":"Initiate","starts_at":"2026-07-03T19:00:00+02:00","ends_at":"2026-07-03T19:50:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Ritual","artist":"Hulder","starts_at":"2026-07-03T20:00:00+02:00","ends_at":"2026-07-03T20:50:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Desert","artist":"Rosalie Cunningham","starts_at":"2026-07-03T20:00:00+02:00","ends_at":"2026-07-03T20:50:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Main","artist":"Trivium","starts_at":"2026-07-03T20:50:00+02:00","ends_at":"2026-07-03T22:00:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Chaos","artist":"Dying Wish","starts_at":"2026-07-03T20:50:00+02:00","ends_at":"2026-07-03T21:50:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Ritual","artist":"Gaerea","starts_at":"2026-07-03T22:00:00+02:00","ends_at":"2026-07-03T23:00:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Desert","artist":"Return To Dust","starts_at":"2026-07-03T22:00:00+02:00","ends_at":"2026-07-03T23:00:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Chaos","artist":"End It","starts_at":"2026-07-03T23:00:00+02:00","ends_at":"2026-07-04T00:00:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Main","artist":"Limp Bizkit","starts_at":"2026-07-03T23:10:00+02:00","ends_at":"2026-07-04T00:30:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Ritual","artist":"Nevertel","starts_at":"2026-07-04T00:35:00+02:00","ends_at":"2026-07-04T01:25:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Desert","artist":"Borknagar","starts_at":"2026-07-04T00:35:00+02:00","ends_at":"2026-07-04T01:45:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Main","artist":"Cavalera Conspiracy","starts_at":"2026-07-04T01:25:00+02:00","ends_at":"2026-07-04T02:40:00+02:00"},{"festival_day":"2026-07-03","day_label":"Viernes 3","doors":"14:30","stage":"Chaos","artist":"House Of Protection","starts_at":"2026-07-04T01:40:00+02:00","ends_at":"2026-07-04T02:40:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Main","artist":"IScream Never Ground","starts_at":"2026-07-04T14:50:00+02:00","ends_at":"2026-07-04T15:40:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Desert","artist":"Band Contest","starts_at":"2026-07-04T14:50:00+02:00","ends_at":"2026-07-04T15:30:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Ritual","artist":"Stellvris","starts_at":"2026-07-04T15:40:00+02:00","ends_at":"2026-07-04T16:25:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Chaos","artist":"Donuts Hole","starts_at":"2026-07-04T15:40:00+02:00","ends_at":"2026-07-04T16:25:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Main","artist":"Hamlet","starts_at":"2026-07-04T16:25:00+02:00","ends_at":"2026-07-04T17:15:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Desert","artist":"Kruddo","starts_at":"2026-07-04T16:25:00+02:00","ends_at":"2026-07-04T17:15:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Ritual","artist":"Todo Mal","starts_at":"2026-07-04T17:15:00+02:00","ends_at":"2026-07-04T18:05:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Chaos","artist":"The Family Men","starts_at":"2026-07-04T17:15:00+02:00","ends_at":"2026-07-04T18:05:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Main","artist":"Imminence","starts_at":"2026-07-04T18:05:00+02:00","ends_at":"2026-07-04T19:05:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Desert","artist":"The Gems","starts_at":"2026-07-04T18:15:00+02:00","ends_at":"2026-07-04T19:05:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Ritual","artist":"Hand Of Juno","starts_at":"2026-07-04T19:05:00+02:00","ends_at":"2026-07-04T19:55:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Chaos","artist":"Frontierer","starts_at":"2026-07-04T19:05:00+02:00","ends_at":"2026-07-04T19:55:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Main","artist":"P.O.D.","starts_at":"2026-07-04T19:55:00+02:00","ends_at":"2026-07-04T20:55:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Desert","artist":"Cwfen","starts_at":"2026-07-04T19:55:00+02:00","ends_at":"2026-07-04T20:55:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Ritual","artist":"Distant","starts_at":"2026-07-04T20:55:00+02:00","ends_at":"2026-07-04T21:55:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Chaos","artist":"Gridiron","starts_at":"2026-07-04T20:55:00+02:00","ends_at":"2026-07-04T21:55:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Main","artist":"Mastodon","starts_at":"2026-07-04T21:55:00+02:00","ends_at":"2026-07-04T23:10:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Desert","artist":"A.A. Williams","starts_at":"2026-07-04T21:55:00+02:00","ends_at":"2026-07-04T22:55:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Ritual","artist":"Dogma","starts_at":"2026-07-04T23:10:00+02:00","ends_at":"2026-07-05T00:20:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Chaos","artist":"Converge","starts_at":"2026-07-04T23:10:00+02:00","ends_at":"2026-07-05T00:20:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Main","artist":"Marilyn Manson","starts_at":"2026-07-05T00:30:00+02:00","ends_at":"2026-07-05T02:00:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Desert","artist":"The Vintage Caravan","starts_at":"2026-07-05T00:50:00+02:00","ends_at":"2026-07-05T02:00:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Ritual","artist":"Blood Incantation","starts_at":"2026-07-05T02:10:00+02:00","ends_at":"2026-07-05T03:25:00+02:00"},{"festival_day":"2026-07-04","day_label":"Sabado 4","doors":"14:05","stage":"Chaos","artist":"Elwood Stray","starts_at":"2026-07-05T02:10:00+02:00","ends_at":"2026-07-05T03:20:00+02:00"}]};
+window.MAP = {"days":{"Miercoles 1":{"id":"6WyWzpydSuo6be9vBQLe6f","url":"https://open.spotify.com/playlist/6WyWzpydSuo6be9vBQLe6f","name":"Resurrection Fest EG 2026 · Miercoles 1"},"Jueves 2":{"id":"7dogNjkY9dkZ4let5EYhK9","url":"https://open.spotify.com/playlist/7dogNjkY9dkZ4let5EYhK9","name":"Resurrection Fest EG 2026 · Jueves 2"},"Viernes 3":{"id":"4XzadIDu2OQ7KY0WlFRwmS","url":"https://open.spotify.com/playlist/4XzadIDu2OQ7KY0WlFRwmS","name":"Resurrection Fest EG 2026 · Viernes 3"}},"artists":{}};
+</script>
+<script>
+(function () {
+  "use strict";
+
+  // SCHEDULE and MAP are injected by build-offline.mjs before this script.
+  var EVENTS = SCHEDULE.events.slice().sort(function (a, b) {
+    return new Date(a.starts_at) - new Date(b.starts_at);
+  });
+  var TZ = (SCHEDULE.festival && SCHEDULE.festival.timezone) || "Europe/Madrid";
+  var STAGE_ORDER = ["Main", "Ritual", "Chaos", "Desert"];
+  var STAGE_VAR = { Main: "--main", Ritual: "--ritual", Chaos: "--chaos", Desert: "--desert" };
+
+  // ---- helpers -------------------------------------------------------------
+  function stageColor(stage) {
+    var v = STAGE_VAR[stage];
+    return v ? "var(" + v + ")" : "var(--accent)";
+  }
+  function fmtTime(iso) {
+    return new Intl.DateTimeFormat("es-ES", { hour: "2-digit", minute: "2-digit", timeZone: TZ }).format(new Date(iso));
+  }
+  function fmtDateLong(d) {
+    return new Intl.DateTimeFormat("es-ES", { weekday: "long", day: "numeric", month: "long", timeZone: TZ }).format(d);
+  }
+  function safeStorageGet(key) {
+    try { return window.localStorage && localStorage.getItem(key); }
+    catch (err) { return ""; }
+  }
+  function safeStorageSet(key, value) {
+    try { localStorage.setItem(key, value); }
+    catch (err) {}
+  }
+  function safeStorageRemove(key) {
+    try { localStorage.removeItem(key); }
+    catch (err) {}
+  }
+  function showBootError(err) {
+    var host = document.getElementById("now");
+    if (!host) return;
+    host.innerHTML = '<div class="section-title">Error</div>' +
+      '<div class="empty"><b>No se ha podido cargar la agenda.</b>' +
+      '<div class="countdown">Prueba a abrirla desde Safari con HTTPS y volver a a&ntilde;adirla a inicio.</div></div>';
+    try { console.error(err); } catch (e) {}
+  }
+  function getNow() {
+    var p = new URLSearchParams(location.search).get("now");
+    if (p) { var d = new Date(p); if (!isNaN(d)) return d; }
+    var s = safeStorageGet("resu-demo");
+    if (s) { var d2 = new Date(s); if (!isNaN(d2)) return d2; }
+    return new Date();
+  }
+
+  function dayList() {
+    var seen = {}, out = [];
+    EVENTS.forEach(function (e) {
+      if (!seen[e.day_label]) { seen[e.day_label] = true; out.push(e.day_label); }
+    });
+    return out;
+  }
+  function eventsForDay(day) {
+    return EVENTS.filter(function (e) { return e.day_label === day; });
+  }
+  function isLive(e, now) {
+    return new Date(e.starts_at) <= now && now < new Date(e.ends_at);
+  }
+  function isReal(e) { return !/^band contest$/i.test(e.artist); }
+
+  function livePerStage(now) {
+    var map = {};
+    EVENTS.forEach(function (e) { if (isLive(e, now)) map[e.stage] = e; });
+    return map;
+  }
+  function nextUp(now) {
+    var up = EVENTS.filter(function (e) { return new Date(e.starts_at) > now && isReal(e); });
+    return up.length ? up[0] : null;
+  }
+  function currentDay(now) {
+    var live = EVENTS.filter(function (e) { return isLive(e, now); });
+    if (live.length) return live[0].day_label;
+    var n = nextUp(now);
+    if (n) return n.day_label;
+    return dayList()[0];
+  }
+
+  // ---- spotify links -------------------------------------------------------
+  function dayTarget(day) { return MAP.days && MAP.days[day]; }
+  function artistTarget(artist) { return MAP.artists && MAP.artists[artist]; }
+  function hrefForEvent(e) {
+    var t = artistTarget(e.artist) || dayTarget(e.day_label);
+    if (t && t.id) return "spotify:playlist:" + t.id;
+    if (t && t.url) return t.url;
+    return null;
+  }
+  function hrefForDay(day) {
+    var t = dayTarget(day);
+    if (t && t.id) return "spotify:playlist:" + t.id;
+    if (t && t.url) return t.url;
+    return null;
+  }
+
+  // ---- rendering -----------------------------------------------------------
+  var state = { selectedDay: null, userPicked: false, view: "grid" };
+
+  function renderClock(now) {
+    var el = document.getElementById("clock");
+    var t = new Intl.DateTimeFormat("es-ES", { hour: "2-digit", minute: "2-digit", timeZone: TZ }).format(now);
+    var d = fmtDateLong(now);
+    el.innerHTML = '<div class="t">' + t + '</div><div class="d">' + d + "</div>";
+  }
+
+  function nowCardHTML(e, now) {
+    var start = new Date(e.starts_at), end = new Date(e.ends_at);
+    var pct = Math.max(0, Math.min(1, (now - start) / (end - start))) * 100;
+    var leftMin = Math.max(0, Math.round((end - now) / 60000));
+    var href = hrefForEvent(e);
+    var tag = href ? "a" : "div";
+    var hattr = href ? ' href="' + href + '"' : "";
+    var col = stageColor(e.stage);
+    return "<" + tag + ' class="nowcard"' + hattr + ' style="border-left-color:' + col + '">' +
+      (href ? '<span class="spot">SPOTIFY ▸</span>' : "") +
+      '<div class="stage" style="color:' + col + '">' + e.stage + "</div>" +
+      '<div class="artist">' + e.artist + "</div>" +
+      '<div class="meta"><span class="left">Quedan ' + leftMin + " min</span><span>" +
+      fmtTime(e.starts_at) + "–" + fmtTime(e.ends_at) + "</span></div>" +
+      '<div class="progress"><i style="width:' + pct.toFixed(1) + "%;background:" + col + '"></i></div>' +
+      "</" + tag + ">";
+  }
+
+  function renderNow(now) {
+    var host = document.getElementById("now");
+    var html = '<div class="section-title">Ahora mismo</div>';
+    var live = livePerStage(now);
+    var stages = STAGE_ORDER.filter(function (s) { return live[s] && isReal(live[s]); });
+
+    if (stages.length) {
+      stages.forEach(function (s) { html += nowCardHTML(live[s], now); });
+    } else {
+      var fest = SCHEDULE.festival || {};
+      var firstStart = new Date(EVENTS[0].starts_at);
+      var n = nextUp(now);
+      if (now < firstStart) {
+        var days = Math.ceil((firstStart - now) / 86400000);
+        html += '<div class="empty"><b>El festival aún no ha empezado.</b>' +
+          '<div class="countdown">Faltan <b>' + days + "</b> día" + (days === 1 ? "" : "s") +
+          " · arranca " + fmtDateLong(firstStart) + "</div></div>";
+      } else if (n) {
+        html += '<div class="empty">Ahora no hay nada en directo.<br>Próximo: <b>' + n.artist +
+          "</b> en " + n.stage + " a las " + fmtTime(n.starts_at) + ".</div>";
+        html += nextSlim(n);
+      } else {
+        html += '<div class="empty"><b>Festival terminado.</b> ¡Hasta el año que viene!</div>';
+      }
+    }
+    host.innerHTML = html;
+  }
+
+  function nextSlim(e) {
+    var href = hrefForEvent(e);
+    var tag = href ? "a" : "div";
+    var hattr = href ? ' href="' + href + '"' : "";
+    var col = stageColor(e.stage);
+    return "<" + tag + ' class="nowcard"' + hattr + ' style="border-left-color:' + col + '">' +
+      (href ? '<span class="spot">SPOTIFY ▸</span>' : "") +
+      '<div class="stage" style="color:' + col + '">Siguiente · ' + e.stage + "</div>" +
+      '<div class="artist">' + e.artist + "</div>" +
+      '<div class="meta"><span>' + fmtTime(e.starts_at) + "–" + fmtTime(e.ends_at) + "</span></div></" + tag + ">";
+  }
+
+  function renderDays(now) {
+    var host = document.getElementById("days");
+    var today = currentDay(now);
+    host.innerHTML = dayList().map(function (day) {
+      var cls = "day";
+      if (day === state.selectedDay) cls += " active";
+      if (day === today) cls += " today";
+      return '<button class="' + cls + '" data-day="' + day + '">' + day + "</button>";
+    }).join("");
+    Array.prototype.forEach.call(host.querySelectorAll(".day"), function (btn) {
+      btn.addEventListener("click", function () {
+        state.selectedDay = btn.getAttribute("data-day");
+        state.userPicked = true;
+        renderAll();
+      });
+    });
+  }
+
+  function listHTML(now) {
+    return eventsForDay(state.selectedDay).map(function (e) {
+      var href = hrefForEvent(e);
+      var live = isLive(e, now);
+      var past = new Date(e.ends_at) <= now;
+      var cls = "slot" + (live ? " live" : past ? " past" : "");
+      var tag = href ? "a" : "div";
+      var hattr = href ? ' href="' + href + '"' : "";
+      var col = stageColor(e.stage);
+      return "<" + tag + ' class="' + cls + '"' + hattr + ">" +
+        '<div class="time">' + fmtTime(e.starts_at) + "<small>" + fmtTime(e.ends_at) + "</small></div>" +
+        '<div class="body"><div class="name">' + e.artist + "</div>" +
+        '<div class="sub"><span class="chip" style="background:' + col + '">' + e.stage + "</span>" +
+        (live ? '<span class="badge">● EN DIRECTO</span>' : "") + "</div></div>" +
+        (href ? '<div class="go">▸</div>' : "") +
+        "</" + tag + ">";
+    }).join("");
+  }
+
+  function gridHTML(now) {
+    var list = eventsForDay(state.selectedDay);
+    if (!list.length) return "";
+    var startMs = list.map(function (e) { return +new Date(e.starts_at); });
+    var endMs = list.map(function (e) { return +new Date(e.ends_at); });
+    var dayStart = new Date(Math.min.apply(null, startMs));
+    dayStart.setMinutes(0, 0, 0);
+    var dayEnd = new Date(Math.max.apply(null, endMs));
+    if (dayEnd.getMinutes() || dayEnd.getSeconds()) {
+      dayEnd.setMinutes(0, 0, 0);
+      dayEnd.setHours(dayEnd.getHours() + 1);
+    }
+    var PXMIN = 1.3;
+    var H = (dayEnd - dayStart) / 60000 * PXMIN;
+    function top(ms) { return (ms - dayStart) / 60000 * PXMIN; }
+
+    var axis = "";
+    for (var t = +dayStart; t <= +dayEnd; t += 3600000) {
+      axis += '<div class="ghour" style="top:' + top(t) + 'px">' + fmtTime(new Date(t).toISOString()) + "</div>";
+    }
+
+    var cols = STAGE_ORDER.map(function (stage) {
+      var blocks = list.filter(function (e) { return e.stage === stage; }).map(function (e) {
+        var s = +new Date(e.starts_at), en = +new Date(e.ends_at);
+        var live = isLive(e, now);
+        var past = en <= +now;
+        var href = hrefForEvent(e);
+        var tag = href ? "a" : "div";
+        var hattr = href ? ' href="' + href + '"' : "";
+        var col = stageColor(e.stage);
+        var h = (en - s) / 60000 * PXMIN;
+        var cls = "gblock" + (live ? " live" : past ? " past" : "");
+        return "<" + tag + ' class="' + cls + '"' + hattr +
+          ' style="top:' + top(s) + "px;height:" + (h - 2) + "px;background:" + col + '">' +
+          '<span class="gname">' + e.artist + "</span>" +
+          '<span class="gtime2">' + fmtTime(e.starts_at) + "</span></" + tag + ">";
+      }).join("");
+      return '<div class="gcol">' + blocks + "</div>";
+    }).join("");
+
+    var showNow = +now >= +dayStart && +now <= +dayEnd;
+    var nowLine = showNow ? '<div class="gnow" style="top:' + top(+now) + 'px"></div>' : "";
+
+    return '<div class="grid">' +
+      '<div class="grow ghead"><div class="gaxiscell"></div>' +
+      STAGE_ORDER.map(function (s) {
+        return '<div class="gstage" style="background:' + stageColor(s) + '">' + s + "</div>";
+      }).join("") +
+      "</div>" +
+      '<div class="grow gbody" style="height:' + H + 'px">' +
+      '<div class="gaxis">' + axis + "</div>" + cols + nowLine +
+      "</div></div>";
+  }
+
+  function renderSchedule(now) {
+    var host = document.getElementById("schedule");
+    var toggle = '<div class="viewtoggle">' +
+      '<button data-v="grid" class="' + (state.view === "grid" ? "on" : "") + '">Parrilla</button>' +
+      '<button data-v="list" class="' + (state.view === "list" ? "on" : "") + '">Lista</button>' +
+      "</div>";
+    var body = state.view === "grid" ? gridHTML(now) : listHTML(now);
+    host.innerHTML = '<div class="section-title">' + state.selectedDay + " · cartel</div>" + toggle + body;
+    Array.prototype.forEach.call(host.querySelectorAll(".viewtoggle button"), function (btn) {
+      btn.addEventListener("click", function () {
+        state.view = btn.getAttribute("data-v");
+        renderAll();
+      });
+    });
+  }
+
+  function renderDayButton() {
+    var btn = document.getElementById("dayBtn");
+    var href = hrefForDay(state.selectedDay);
+    var icon = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm4.5 14.4a.62.62 0 01-.86.21c-2.35-1.44-5.3-1.76-8.8-.96a.62.62 0 11-.28-1.21c3.82-.88 7.1-.5 9.73 1.1.3.18.39.57.21.86zm1.2-2.67a.78.78 0 01-1.07.26c-2.69-1.65-6.79-2.13-9.97-1.16a.78.78 0 11-.45-1.49c3.63-1.1 8.15-.57 11.23 1.32.37.23.49.71.26 1.07zm.1-2.78C14.87 9.36 9.4 9.18 6.3 10.12a.93.93 0 11-.54-1.79c3.56-1.08 9.6-.87 13.18 1.25a.94.94 0 01-.95 1.61z"/></svg>';
+    if (href) {
+      btn.className = "daybtn";
+      btn.setAttribute("href", href);
+      btn.innerHTML = icon + "Playlist " + state.selectedDay;
+    } else {
+      btn.className = "daybtn disabled";
+      btn.removeAttribute("href");
+      btn.innerHTML = "Genera la playlist de " + state.selectedDay;
+    }
+  }
+
+  function renderAll() {
+    var now = getNow();
+    if (!state.selectedDay || !state.userPicked) state.selectedDay = currentDay(now);
+    renderClock(now);
+    renderNow(now);
+    renderDays(now);
+    renderSchedule(now);
+    renderDayButton();
+  }
+  function registerOfflineCache() {
+    var local = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+    if (!("serviceWorker" in navigator) || (location.protocol !== "https:" && !local)) return;
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("./sw.js").catch(function (err) {
+        try { console.warn("Offline cache unavailable", err); } catch (e) {}
+      });
+    });
+  }
+
+  registerOfflineCache();
+
+  // demo time: tap the clock to simulate a moment (helps testing before July)
+  document.addEventListener("DOMContentLoaded", function () {
+    try { renderAll(); }
+    catch (err) { showBootError(err); return; }
+    setInterval(function () {
+      try { renderAll(); }
+      catch (err) { showBootError(err); }
+    }, 20000);
+    var clock = document.getElementById("clock");
+    if (clock) {
+      clock.addEventListener("click", function () {
+        var cur = safeStorageGet("resu-demo") || "";
+        var v = prompt("Simular fecha/hora (ISO, ej. 2026-07-03T21:30). Vacío = hora real:", cur);
+        if (v === null) return;
+        if (v.trim() === "") safeStorageRemove("resu-demo");
+        else safeStorageSet("resu-demo", v.trim());
+        state.userPicked = false;
+        try { renderAll(); }
+        catch (err) { showBootError(err); }
+      });
+    }
+  });
+})();
+
+</script>
+</body>
+</html>
